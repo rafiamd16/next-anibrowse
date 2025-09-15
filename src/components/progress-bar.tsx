@@ -3,11 +3,11 @@
 import { usePathname, useSearchParams } from 'next/navigation'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 
 NProgress.configure({ showSpinner: false, trickleSpeed: 500, minimum: 0.15 })
 
-export default function ProgressBar() {
+const ProgressInner = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -18,3 +18,13 @@ export default function ProgressBar() {
 
   return null
 }
+
+const ProgressBar = () => {
+  return (
+    <Suspense fallback={null}>
+      <ProgressInner />
+    </Suspense>
+  )
+}
+
+export default ProgressBar
