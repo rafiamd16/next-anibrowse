@@ -12,7 +12,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | AniBrowse',
+    template: '%s - AniBrowse',
     default: 'AniBrowse',
   },
   description: 'A simple anime browser',

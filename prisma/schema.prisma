@@ -17,6 +17,7 @@ model User {
   role           String       @default("user")
   accounts       Account[]
   collections    Collection[] @relation("UserCollections")
+  comments       Comment[]    @relation("UserComments")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -57,4 +58,19 @@ model Collection {
 
   @@unique([mal_id, userId])
   @@map("collections")
+}
+
+model Comment {
+  id         String  @id @default(cuid())
+  mal_id     Int
+  userId     String
+  animeTitle String?
+  comment    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation("UserComments", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
 }

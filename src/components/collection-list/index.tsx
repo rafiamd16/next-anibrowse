@@ -1,5 +1,6 @@
 'use client'
 
+import { User } from '@/types/user'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,15 +11,17 @@ interface collectionItem {
   userId: string
   animeTitle: string | null
   animeImage: string | null
+  user?: User
   createdAt: Date
   updatedAt: Date
 }
 
 interface Props {
   collections: collectionItem[]
+  user: User | null
 }
 
-const CollectionList = ({ collections }: Props) => {
+const CollectionList = ({ collections, user }: Props) => {
   return !collections || collections.length < 1 ? (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
@@ -48,6 +51,11 @@ const CollectionList = ({ collections }: Props) => {
             <h3 className="text-sm font-bold transition-colors group-hover:text-primary md:text-lg">
               {col.animeTitle ?? 'N/A'}
             </h3>
+            {user?.role === 'admin' && (
+              <p className="mt-1 text-xs text-gray-400 md:text-sm">
+                {col.user?.role !== 'admin' ? `Added by ${col.user?.name}` : 'My collection'}
+              </p>
+            )}
           </div>
         </Link>
       ))}

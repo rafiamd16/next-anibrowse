@@ -114,7 +114,7 @@ const UserButton = ({ className, user, isLoggedIn }: Props) => {
         <DropdownMenuItem
           asChild
           className={`cursor-pointer font-semibold ${
-            isLoggedIn ? 'text-destructive' : 'text-primary'
+            isLoggedIn ? 'text-destructive' : 'text-blue-500'
           }`}
         >
           {isLoggedIn ? (

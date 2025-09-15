@@ -52,7 +52,7 @@ const RegisterForm = () => {
           duration: 3000,
         })
       }
-      push('/login')
+      push('/signin')
       toast.success('Signed up successfully', {
         richColors: true,
         position: 'top-center',

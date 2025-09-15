@@ -9,7 +9,6 @@ import {
 import { revalidatePath } from 'next/cache'
 
 const isAdmin = (role?: string) => role === 'admin'
-const api_url = process.env.NEXT_PUBLIC_API_URL as string
 
 const checkOwnership = async (collectionId: string, userId: string, role?: string) => {
   const collection = await db.collection.findUnique({ where: { id: collectionId } })
@@ -67,30 +66,17 @@ export const getCollections = async () => {
   if (!user?.id) return []
 
   const collections = isAdmin(user.role)
-    ? await db.collection.findMany({ include: { user: true }, orderBy: { createdAt: 'desc' } })
+    ? await db.collection.findMany({
+        include: {
+          user: {
+            select: { id: true, name: true, email: true, role: true, image: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      })
     : await db.collection.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } })
 
   return collections
-}
-
-export const updateCollection = async (id: string, mal_id: number) => {
-  const { user } = await getCurrentUser()
-  if (!user?.id) throw new Error('Unauthorized')
-
-  await checkOwnership(id, user.id, user.role)
-
-  try {
-    const updated = await db.collection.update({
-      where: { id },
-      data: { mal_id },
-    })
-
-    revalidatePath('/users/dashboard/collection')
-    return updated
-  } catch (error) {
-    console.error('Failed to update collection: ', error)
-    return { error: 'Failed to update collection' }
-  }
 }
 
 export const deleteCollection = async (id: string) => {
