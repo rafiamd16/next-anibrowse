@@ -15,10 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub,
     Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
+      credentials: { email: {}, password: {} },
       authorize: async (credentials) => {
         const parsed = signinFormSchema.safeParse(credentials)
         if (!parsed.success) return null
@@ -44,33 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const path = nextUrl.pathname
-
-      const protectedPaths = ['/users', '/admin', 'popular', '/anime', '/search']
-
-      if (!isLoggedIn && protectedPaths.some((p) => path.startsWith(p)))
-        return Response.redirect(new URL('/signin', nextUrl))
-
-      if (!isLoggedIn && path.startsWith('/signout'))
-        return Response.redirect(new URL('/', nextUrl))
-
-      if (isLoggedIn && path.startsWith('/signin'))
-        return Response.redirect(new URL('/users/dashboard', nextUrl))
-
-      if (isLoggedIn && auth?.user?.role !== 'admin' && path.startsWith('/signup'))
-        return Response.redirect(new URL('/users/dashboard', nextUrl))
-
-      if (isLoggedIn && auth?.user?.role !== 'admin' && path.startsWith('/admin'))
-        return Response.redirect(new URL('/users/dashboard', nextUrl))
-
-      return true
-    },
     jwt({ token, user }) {
-      if (user) {
-        token.role = user.role
-      }
+      if (user) token.role = user.role
       return token
     },
     session({ session, token }) {
