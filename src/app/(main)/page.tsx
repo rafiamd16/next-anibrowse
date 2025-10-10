@@ -6,7 +6,6 @@ import { AnimeListResponse } from '@/types/anime'
 const HomePage = async () => {
   const topAnime = await getAnimes<AnimeListResponse>('top/anime', 'limit=12')
   let recommendedAnime = await getNestedAnime('recommendations/anime', 'entry')
-
   recommendedAnime = pickRandom(recommendedAnime, 6)
 
   return (
